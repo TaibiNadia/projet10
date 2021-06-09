@@ -1,0 +1,6 @@
+---
+- include: php7.yml
+- include: nginx.yml
+- include: deploy.yml
+- include: metricbeat.yml
+#- include: filebeat.yml

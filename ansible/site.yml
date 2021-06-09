@@ -1,0 +1,7 @@
+
+- hosts: web
+  become: true
+  vars:
+    DB_HOSTNAME: terraform-20210608174248281100000002.cuwbzm2mifvp.eu-west-3.rds.amazonaws.com
+  roles:
+    - wordpress

@@ -1,0 +1,6 @@
+#ip address of EC2
+[bastion]
+15.236.131.192
+
+[web]
+10.0.1.248

@@ -1,0 +1,48 @@
+--- 
+- name: APT - Add elastic.co repository
+  get_url: 
+     url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.10.0-amd64.deb 
+     dest: /    
+
+- name: FILEBEAT - Install Filebeat
+  command:
+     dpkg -i /filebeat-oss-7.10.0-amd64.deb
+
+- name: FILEBEAT - Copy base filebeat config file
+  copy:
+     src: /home/vagrant/ansible/roles/wordpress/templates/filebeat-conf.yml
+     dest: /etc/filebeat/filebeat.yml
+
+#- name: FILEBEAT - Enable Nginx 
+#  command:
+#     filebeat modules enable nginx
+
+#- name: FILEBEAT - Configure Nginx Logging
+#  copy:
+#     src: /home/vagrant/ansible/roles/wordpress/templates/nginx-conf.yml
+#     dest: /etc/filebeat/modules.d/nginx.yml
+
+#- name: FILEBEAT - Start filebeat
+#  service:
+#     name=filebeat state=restarted
+
+- name: FILEBEAT - Enable nginx
+  command:
+     filebeat modules enable nginx
+
+- name: FILEBEAT - Setup pipeline dashboard
+  command:
+     filebeat setup --pipelines --index-management --dashboards -c /etc/filebeat/filebeat.yml
+  async: 45
+  poll: 0
+
+
+- name: FILEBEAT - Start filebeat 
+  command:
+     filebeat.sh -e -c /etc/filebeat/filebeat.yml -d "publish" 
+  async: 45
+  poll: 0 
+
+- name: FILEBEAT - Restart filebeat
+  service:
+     name=filebeat state=restarted
